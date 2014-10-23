@@ -1,15 +1,34 @@
-## Put comments here that give an overall description of what your
-## functions do
+## These functions provide memoized matrix inversion
 
-## Write a short comment describing this function
-
+## Returns the specified, invertible matrix in a wrapper (decorator)
+## that provides a memoized (cached) access to its inverse
+## via the solve() function.
+## 
+## Additionally, the function is_cached() is exposed to allow testing
+## the caching behaviour of the decorator.
+##
 makeCacheMatrix <- function(x = matrix()) {
+  cached_solution <- NULL
 
+  solve_memoized <- function() {
+    if (is.null(cached_solution)) {
+      cached_solution <<- solve(x)
+    }
+    cached_solution
+  }
+
+  list(
+    is_cached = function() !is.null(cached_solution),
+    solve = solve_memoized
+  )
 }
 
-
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+## Takes a matrix decorated by the makeCacheMatrix function
+## and returns its inverse, using the solve() function.
+## 
+## Note: This function is redundant, and exists only to match
+## the assignment. All the beef is in makeCacheMatrix().
+##
+cacheSolve <- function(x) {
+  x$solve()
 }
